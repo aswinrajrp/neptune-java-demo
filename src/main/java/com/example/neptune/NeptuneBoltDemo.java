@@ -71,7 +71,18 @@ public class NeptuneBoltDemo {
         try (Session session = driver.session()) {
             logger.info("Starting sample OpenCypher queries");
 
-            // Query 1: Create some sample nodes
+            //String testQuery = "MATCH (n:Person) RETURN n.name";
+            //String testQuery = "MATCH (n) RETURN n";
+            String testQuery = "RETURN ST_AsText(ST_GeomFromText(\"POINT (5 5)\"))";
+
+            Result queryResult = session.run(testQuery);
+
+            while (queryResult.hasNext()) {
+                Record record = queryResult.next();
+                logger.info(record.toString());
+            }
+
+            /*// Query 1: Create some sample nodes
             String createQuery = """
                     CREATE (p1:Person {name: 'Alice', age: 30})
                     CREATE (p2:Person {name: 'Bob', age: 25})
@@ -131,7 +142,7 @@ public class NeptuneBoltDemo {
 
             logger.info("Cleaning up test data");
             session.run(cleanupQuery);
-            logger.info("Test data cleaned up successfully");
+            logger.info("Test data cleaned up successfully");*/
 
             logger.info("Sample queries completed successfully");
 

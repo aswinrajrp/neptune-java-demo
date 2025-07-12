@@ -102,12 +102,13 @@ public class NeptuneDataApiDemo {
         try {
             // Query all persons
             logger.info("Querying persons in the database:");
-            ExecuteOpenCypherQueryResponse response = executeQuery("MATCH (p:Person) RETURN p.name as name, p.age as age");
+            //ExecuteOpenCypherQueryResponse response = executeQuery("MATCH (p:Person) RETURN p.name as name, p.age as age");
+            ExecuteOpenCypherQueryResponse response = executeQuery("RETURN ST_GeomFromText(\"POINT (5 5)\");");
 
             Document results = response.results();
             logger.info("Persons query results: {}", results.toString());
 
-            // Parse results if they contain a results array
+            /*// Parse results if they contain a results array
             if (results.isMap() && results.asMap().containsKey("results")) {
                 Document resultsArray = results.asMap().get("results");
                 if (resultsArray.isList()) {
@@ -146,7 +147,7 @@ public class NeptuneDataApiDemo {
                         }
                     }
                 }
-            }
+            }*/
 
         } catch (Exception e) {
             logger.error("Query execution failed", e);
@@ -231,11 +232,11 @@ public class NeptuneDataApiDemo {
             demo.testConnection();
 
             // Create and query sample data
-            demo.createSampleData();
+            //demo.createSampleData();
             demo.querySampleData();
 
             // Cleanup
-            demo.cleanupSampleData();
+            //demo.cleanupSampleData();
 
         } catch (Exception e) {
             logger.error("Application failed", e);
