@@ -7,16 +7,12 @@ import org.apache.logging.log4j.Logger;
 import org.neo4j.driver.*;
 
 import java.io.FileReader;
-import java.time.OffsetDateTime;
 import java.util.*;
 
 public class Neo4jBoltBulkImporter {
   private static final Logger logger = LogManager.getLogger(Neo4jBoltBulkImporter.class);
 
   public static void main(String[] args) throws Exception {
-
-    /*String vertexCsv = "C:\\GraphDB\\Dheeraj\\data\\vertices.csv";
-    String edgeCsv = "C:\\GraphDB\\Dheeraj\\data\\edges.csv";*/
 
     String vertexCsv = "C:\\GraphDB\\Neptune\\Test Data\\1752104578160_small\\vertices_clean.csv";
     String edgeCsv = "C:\\GraphDB\\Neptune\\Test Data\\1752104578160_small\\edges.csv";
@@ -46,7 +42,7 @@ public class Neo4jBoltBulkImporter {
         String cypher = """
             UNWIND $rows AS row
             CREATE (n:`%s`)
-            SET n = row.props
+            SET n = row.props, n.geometry = ST_GeomFromText(row.props.shape_string)
             RETURN row.id AS csvId, id(n) AS sysId
             """.formatted(label);
 
@@ -80,12 +76,6 @@ public class Neo4jBoltBulkImporter {
             transformedRow.put("props", props);
             transformed.add(transformedRow);
           }
-
-         /* Map<String, Object> transformedRow = new HashMap<>();
-          transformedRow.put("fromId", from);
-          transformedRow.put("toId", to);
-          transformedRow.put("props", props);
-          transformed.add(transformedRow);*/
         }
 
         HashMap<String, Object> parametersRel = new HashMap<>();
@@ -245,36 +235,4 @@ public class Neo4jBoltBulkImporter {
 
     return driver;
   }
-
-/*
-  public static void main2(String[] args) throws Exception {
-    try (Driver driver = getNeo4jBoltDriver();
-         Session session = driver.session()) {
-
-      Map<String, Object> parameters = new HashMap<>();
-
-      Map<String, Object> row1 = new HashMap<>();
-      row1.put("name", "Dheeraj");
-      row1.put("id", 1);
-
-      Map<String, Object> row2 = new HashMap<>();
-      row2.put("name", "Aswin");
-      row2.put("id", 2);
-
-      Map<String, Object> row3 = new HashMap<>();
-      row3.put("name", "Said");
-      row3.put("id", 3);
-
-      List<Map<String, Object>> rows = new ArrayList<>();
-      rows.add(row1);
-      rows.add(row2);
-      rows.add(row3);
-
-      parameters.put("rows", rows);
-
-      String cypher = "UNWIND $rows as row CREATE (n:`Person`) SET n = row RETURN n";
-      var res = session.run(cypher, parameters);
-      System.out.println("Done");
-    }
-  }*/
 }
